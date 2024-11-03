@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <input type="password" id="inputString" oninput="verifyInput()">
+    
+    <input type="password" id="confirmString" oninput="verifyInput()">
+
+    <br><br>
+
+    <input type="password" id="outputHash" readonly>
+    <button onclick="copiarHash()">Copiar</button>
+
+    <script>
+        async function hashString() {
+            const input = document.getElementById('inputString').value;
+            const encoder = new TextEncoder();
+            const data = encoder.encode(input);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashBase64 = btoa(String.fromCharCode(...new Uint8Array(hashBuffer)));
+            document.getElementById('outputHash').value = hashBase64;
+        }
+
+        function verifyInput() {
+            const inputString = document.getElementById('inputString').value;
+            const confirmString = document.getElementById('confirmString').value;
+            if (inputString && inputString === confirmString) {
+                hashString();
+            } else {
+                document.getElementById('outputHash').value = "";
+            }
+        }
+
+        function copiarHash() {
+            const outputHash = document.getElementById('outputHash');
+            outputHash.select();
+            outputHash.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(outputHash.value).catch(err => {
+                console.error("Error al copiar:", err);
+            });
+        }
+    </script>
+</body>
+</html>
