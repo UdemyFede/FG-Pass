@@ -3,18 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FG-Pass</title>
+    <link rel="icon" href="fav/dot.svg" type="image/svg+xml">
+    <style>
+        body, html {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+        #formContainer {
+            display: none;
+            text-align: center;
+            max-width: 320px;
+            width: 100%;
+        }
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 12px;
+            width: 100%;
+            font-size: 16px;
+            color: #fff;
+            background-color: #000;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input[readonly] {
+            cursor: not-allowed;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            color: #fff;
+            background-color: #000;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 200px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #333;
+        }
+    </style>
 </head>
 <body>
-    <input type="password" id="inputString" oninput="verifyInput()">
-    
-    <input type="password" id="confirmString" oninput="verifyInput()">
-
-    <br><br>
-
-    <input type="password" id="outputHash" readonly>
-    <button onclick="copiarHash()">Copiar</button>
+    <div id="formContainer">
+        <input type="password" id="inputString" oninput="verifyInput()" placeholder="Ingresa contraseña">
+        <input type="password" id="confirmString" oninput="verifyInput()" placeholder="Confirma contraseña">
+        <input type="password" id="outputHash" readonly placeholder="Hash generado">
+        <button onclick="copiarHash()">Copiar</button>
+    </div>
 
     <script>
+        let sPressedCount = 0;
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "s" || event.key === "S") {
+                sPressedCount++;
+                if (sPressedCount === 2) {
+                    document.getElementById("formContainer").style.display = "block";
+                }
+            } else {
+                sPressedCount = 0;
+            }
+        });
+
         async function hashString() {
             const input = document.getElementById('inputString').value;
             const encoder = new TextEncoder();
